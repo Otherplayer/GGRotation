@@ -7,10 +7,20 @@
 //
 
 #import "HYQCircleView.h"
+#import "HYQRotationGestureRecognizer.h"
 
-
-@interface HYQCircleView ()<UIGestureRecognizerDelegate>
+@interface HYQCircleView ()<HYQRotationGestureDelegate>
 @property (nonatomic, strong)UIImageView *imageView;
+
+@property (nonatomic, assign) NSInteger currentIndex;//当前所在页面
+@property (nonatomic, assign) BOOL isRotating;//是否正在旋转
+
+@property (nonatomic, assign) CGFloat beganAngle;
+@property (nonatomic, assign) CGFloat currentAngle;
+@property (nonatomic, assign) CGFloat startAngle;
+@property (nonatomic, assign) CGFloat stopAngle;
+
+
 @end
 
 @implementation HYQCircleView
@@ -18,115 +28,187 @@
 - (instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if (self) {
-        self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(frame), CGRectGetHeight(frame))];
-        [self.imageView setImage:[UIImage imageNamed:@"guide_image.png"]];
-        [self.imageView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+        
+        // Allow rotation between the start and stop angles.
+        [self setIsRotating:NO];
+        [self setCurrentIndex:0];
+        [self setStartAngle:-180.0];
+        [self setStopAngle:.0];
+        
         [self addSubview:self.imageView];
-        [self setUserInteractionEnabled:YES];
-        [self.imageView setUserInteractionEnabled:YES];
-        [self addGesture];
-
+        [self.imageView setTransform:CGAffineTransformMakeRotation(0)];
+        
+        
     }
     return self;
 }
 
 
+#pragma mark - Function
 
-
-
-
-
-/*
- 添加手势
- */
-- (void)addGesture{
-    UIRotationGestureRecognizer *panGesture = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(rotate:)];
-//    panGesture.delegate = self;
-    [self addGestureRecognizer:panGesture];
-}
-
-////手势操作
-//- (void)handleSinglePan:(id)sender{
-//    UIPanGestureRecognizer *panGesture = (UIPanGestureRecognizer *)sender;
-//    CGPoint pointMove = [panGesture locationInView:self];
-//    NSLog(@"%@",NSStringFromCGPoint(pointMove));
-//    switch (panGesture.state) {
-//        case UIGestureRecognizerStateBegan:
-//        {
-////            pointDrag = [panGesture locationInView:self];
-//        }
-//            break;
-//        case UIGestureRecognizerStateChanged:
-//        {
-//            CGPoint pointMove = [panGesture locationInView:self];
-////            [self dragPoint:pointDrag movePoint:pointMove centerPoint:center];
-//        }
-//            break;
-//        case UIGestureRecognizerStateEnded:
-//        {
-//            CGPoint pointMove = [panGesture locationInView:self];
-////            [self dragPoint:pointDrag movePoint:pointMove centerPoint:center];
-////            [self reviseCirclePoint];
-//        }
-//            break;
-//        case UIGestureRecognizerStateFailed:
-//        {
-//            CGPoint pointMove = [panGesture locationInView:self];
-////            [self dragPoint:pointDrag movePoint:pointMove centerPoint:center];
-////            [self reviseCirclePoint];
-//        }
-//            break;
-//            
-//        default:
-//            break;
-//    }
-//}
-//
-
-// 旋转
--(void)rotate:(UIRotationGestureRecognizer *)sender {
-    CGFloat _lastRotation = 0.0;
+- (void)rotateAction:(HYQRotationGestureRecognizer *)recognizer{
     
-    if([(UIRotationGestureRecognizer*)sender state] == UIGestureRecognizerStateEnded) {
-        
-        _lastRotation = 0.0;
+    if (self.isRotating) {
         return;
     }
     
-    CGFloat rotation = 0.0 - (_lastRotation - [(UIRotationGestureRecognizer*)sender rotation]);
+    CGFloat degrees = radiansToDegrees([recognizer rotation]);
+    CGFloat currentAngle = [self currentAngle] + degrees;
+    CGFloat relativeAngle = fmodf(currentAngle, 360.0);  // Converts to angle between 0 and 360 degrees.
     
-    CGAffineTransform currentTransform = self.imageView.transform;
-    CGAffineTransform newTransform = CGAffineTransformRotate(currentTransform,rotation);
+    [self recordAngle:currentAngle];
     
-    [self.imageView setTransform:newTransform];
+    BOOL shouldRotate = NO;
+    if ([self startAngle] <= [self stopAngle]) {
+        shouldRotate = (relativeAngle >= [self startAngle] && relativeAngle <= [self stopAngle]);
+    } else if ([self startAngle] > [self stopAngle]) {
+        shouldRotate = (relativeAngle >= [self startAngle] || relativeAngle <= [self stopAngle]);
+    }
     
-    _lastRotation = [(UIRotationGestureRecognizer*)sender rotation];
-//    [self showOverlayWithFrame:self.imageView.frame];
+    if (shouldRotate) {
+        if (currentAngle > self.stopAngle)  {currentAngle = self.stopAngle;}
+        if (currentAngle < self.startAngle) {currentAngle = self.startAngle;}
+        
+        [self setCurrentAngle:currentAngle];
+        UIView *view = [recognizer view];
+        [view setTransform:CGAffineTransformRotate([view transform], [recognizer rotation])];
+    }
 }
-////随着拖动改变子view位置，子view与y轴的夹角，子view与x轴的夹角
-//- (void)dragPoint:(CGPoint)dragPoint movePoint:(CGPoint)movePoint centerPoint:(CGPoint)centerPoint{
-//    CGFloat drag_radian   = [self schAtan2f:dragPoint.x - centerPoint.x theB:dragPoint.y - centerPoint.y];
-//    
-//    CGFloat move_radian   = [self schAtan2f:movePoint.x - centerPoint.x theB:movePoint.y - centerPoint.y];
-//    
-//    CGFloat change_radian = (move_radian - drag_radian);
-////    for (int i=0; i<arrImages.count; i++) {
-////        DragImageView *imageview = [arrImages objectAtIndex:i];
-////        imageview.center = [self getPointByRadian:(imageview.current_radian+change_radian) centreOfCircle:center radiusOfCircle:radius];
-////        imageview.current_radian = [self getRadinaByRadian:imageview.current_radian + change_radian];;
-////        imageview.current_animation_radian = [self getAnimationRadianByRadian:imageview.current_radian];;
-////    }
-//}
-//
-////计算schAtan值
-//- (CGFloat)schAtan2f:(CGFloat)a theB:(CGFloat)b
-//{
-//    CGFloat rd = atan2f(a,b);
-//    
-//    if(rd < 0.0f)
-//        rd = M_PI * 2 + rd;
-//    
-//    return rd;
-//}
+
+
+- (void)recordAngle:(CGFloat)angle{
+    //NSLog(@"%@",@(angle));
+    /*0 -> -90 -> -180*/
+    
+}
+
+
+#pragma mark - HYQRotationGestureDelegate
+
+- (void)touchesBegan:(HYQRotationGestureRecognizer *)gestureRecognizer{
+    self.beganAngle = self.currentAngle;
+    NSLog(@"Sssssssssssssssssstart : %@",@(self.beganAngle));
+}
+
+- (void)touchesEnded:(HYQRotationGestureRecognizer *)gestureRecognizer{
+    NSLog(@"Eeeeeeeeeeeeeeeeeeeend : %@",@(self.currentAngle));
+    if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+        //NSLog(@"touches ended%@  %@  %@",@(self.currentAngle),@(self.beganAngle),@(self.currentIndex));
+        
+        if (self.beganAngle > self.currentAngle) {
+            //前进一页
+            self.currentIndex ++;
+        }else if (self.beganAngle == self.currentAngle) {
+            
+        }else{
+            self.currentIndex --;
+        }
+        
+        [self rotateToIndex:self.currentIndex];
+        
+        
+        //        CGFloat shouldToAngle = [self isCloseAngle:self.currentAngle];
+        //
+        //        [UIView animateWithDuration:0.25 animations:^{
+        //            [self setIsRotating:YES];
+        //            [self.imageView setTransform:CGAffineTransformMakeRotation(shouldToAngle)];
+        //        } completion:^(BOOL finished) {
+        //            [self setIsRotating:NO];
+        //        }];
+        
+    }
+    
+}
+
+- (CGFloat)isCloseAngle:(CGFloat)angle{
+    /** (0) -> (-90) -> (-180) **/
+    NSInteger agl = (NSInteger)fabs(angle);
+    NSInteger min = 0;
+    NSInteger mid = 90;
+    NSInteger hig = 180;
+    
+    //处在0到-90之间,距离0更近
+    //处在0到-90之间,距离-90更近
+    //处在-90到-180之间,距离-90更近
+    //处在-90到-180之间,距离-180更近
+    
+    
+    min = labs(min - agl);
+    mid = labs(mid - agl);
+    hig = labs(hig - agl);
+    
+    NSInteger minValue = MIN(MIN(min, mid), hig);
+    
+    
+    NSLog(@"MMMMMMM  %@",@(minValue));
+    
+    if (minValue == min) {
+        NSLog(@"===============Min");
+        self.currentAngle = 0;
+        self.currentIndex = 0;
+        return 0;
+    }else if (minValue == mid){
+        NSLog(@"===============Mid");
+        self.currentAngle = -90;
+        self.currentIndex = 1;
+        return -M_PI/2;
+    }else if (minValue == hig){
+        NSLog(@"===============Hig");
+        self.currentAngle = -180;
+        self.currentIndex = 2;
+        return -M_PI;
+    }
+    return -180;
+}
+
+- (void)rotateToIndex:(NSInteger)index{
+    if (index < 0) {index = 0;}
+    if (index > 2) {index = 2;}
+    
+    CGFloat shouldToAngle = 0;
+    switch (index) {
+        case 0:
+            shouldToAngle = 0;
+            self.currentAngle = 0;
+            break;
+        case 1:
+            shouldToAngle = -M_PI/2;
+            self.currentAngle = -90;
+            break;
+        case 2:
+            shouldToAngle = -M_PI;
+            self.currentAngle = -180;
+            break;
+    }
+    
+    self.currentIndex = index;
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        [self setIsRotating:YES];
+        [self.imageView setTransform:CGAffineTransformMakeRotation(shouldToAngle)];
+    } completion:^(BOOL finished) {
+        [self setIsRotating:NO];
+    }];
+}
+
+
+#pragma mark - configure
+
+- (UIImageView *)imageView{
+    if (!_imageView) {
+        CGFloat width = CGRectGetWidth(self.bounds);
+        
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectMake(-width, CGRectGetHeight(self.bounds) - width * 3 / 2.0 + 70, width * 3, width * 3)];
+        [_imageView setImage:[UIImage imageNamed:@"guide_image"]];
+//        [_imageView setBackgroundColor:[UIColor groupTableViewBackgroundColor]];
+        [self addSubview:_imageView];
+        [_imageView setUserInteractionEnabled:YES];
+        
+        HYQRotationGestureRecognizer *panGesture = [[HYQRotationGestureRecognizer alloc] initWithTarget:self action:@selector(rotateAction:)];
+        [panGesture setRotationGestureDelegate:self];
+        [_imageView addGestureRecognizer:panGesture];
+    }
+    return _imageView;
+}
 
 @end

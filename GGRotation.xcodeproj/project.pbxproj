@@ -13,6 +13,10 @@
 		63E73D0A1BF307AE0027D2E6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63E73D081BF307AE0027D2E6 /* Main.storyboard */; };
 		63E73D0C1BF307AE0027D2E6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63E73D0B1BF307AE0027D2E6 /* Assets.xcassets */; };
 		63E73D0F1BF307AE0027D2E6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63E73D0D1BF307AE0027D2E6 /* LaunchScreen.storyboard */; };
+		63E73D181BF307BE0027D2E6 /* HYQCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E73D171BF307BE0027D2E6 /* HYQCircleView.m */; };
+		63E73D1E1BF30B510027D2E6 /* 1xbVZ8.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63E73D1D1BF30B510027D2E6 /* 1xbVZ8.jpg */; };
+		63E73D231BF3148F0027D2E6 /* HYQRotationGestureRecognizer.m in Sources */ = {isa = PBXBuildFile; fileRef = 63E73D221BF3148F0027D2E6 /* HYQRotationGestureRecognizer.m */; };
+		63E73D2B1BF317BA0027D2E6 /* guide_image@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63E73D2A1BF317BA0027D2E6 /* guide_image@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,12 @@
 		63E73D0B1BF307AE0027D2E6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		63E73D0E1BF307AE0027D2E6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		63E73D101BF307AE0027D2E6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63E73D161BF307BE0027D2E6 /* HYQCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYQCircleView.h; sourceTree = "<group>"; };
+		63E73D171BF307BE0027D2E6 /* HYQCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYQCircleView.m; sourceTree = "<group>"; };
+		63E73D1D1BF30B510027D2E6 /* 1xbVZ8.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1xbVZ8.jpg; sourceTree = "<group>"; };
+		63E73D211BF3148F0027D2E6 /* HYQRotationGestureRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYQRotationGestureRecognizer.h; sourceTree = "<group>"; };
+		63E73D221BF3148F0027D2E6 /* HYQRotationGestureRecognizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYQRotationGestureRecognizer.m; sourceTree = "<group>"; };
+		63E73D2A1BF317BA0027D2E6 /* guide_image@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "guide_image@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,11 +72,17 @@
 				63E73D031BF307AE0027D2E6 /* AppDelegate.m */,
 				63E73D051BF307AE0027D2E6 /* ViewController.h */,
 				63E73D061BF307AE0027D2E6 /* ViewController.m */,
+				63E73D161BF307BE0027D2E6 /* HYQCircleView.h */,
+				63E73D171BF307BE0027D2E6 /* HYQCircleView.m */,
+				63E73D2A1BF317BA0027D2E6 /* guide_image@2x.png */,
+				63E73D1D1BF30B510027D2E6 /* 1xbVZ8.jpg */,
 				63E73D081BF307AE0027D2E6 /* Main.storyboard */,
 				63E73D0B1BF307AE0027D2E6 /* Assets.xcassets */,
 				63E73D0D1BF307AE0027D2E6 /* LaunchScreen.storyboard */,
 				63E73D101BF307AE0027D2E6 /* Info.plist */,
 				63E73CFF1BF307AE0027D2E6 /* Supporting Files */,
+				63E73D211BF3148F0027D2E6 /* HYQRotationGestureRecognizer.h */,
+				63E73D221BF3148F0027D2E6 /* HYQRotationGestureRecognizer.m */,
 			);
 			path = GGRotation;
 			sourceTree = "<group>";
@@ -136,7 +152,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63E73D1E1BF30B510027D2E6 /* 1xbVZ8.jpg in Resources */,
 				63E73D0F1BF307AE0027D2E6 /* LaunchScreen.storyboard in Resources */,
+				63E73D2B1BF317BA0027D2E6 /* guide_image@2x.png in Resources */,
 				63E73D0C1BF307AE0027D2E6 /* Assets.xcassets in Resources */,
 				63E73D0A1BF307AE0027D2E6 /* Main.storyboard in Resources */,
 			);
@@ -150,6 +168,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				63E73D071BF307AE0027D2E6 /* ViewController.m in Sources */,
+				63E73D181BF307BE0027D2E6 /* HYQCircleView.m in Sources */,
+				63E73D231BF3148F0027D2E6 /* HYQRotationGestureRecognizer.m in Sources */,
 				63E73D041BF307AE0027D2E6 /* AppDelegate.m in Sources */,
 				63E73D011BF307AE0027D2E6 /* main.m in Sources */,
 			);
@@ -264,8 +284,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = GGRotation/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Otherplayer.GGRotation;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hotyq.HotYQ;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -275,8 +296,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = GGRotation/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = Otherplayer.GGRotation;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hotyq.HotYQ;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
